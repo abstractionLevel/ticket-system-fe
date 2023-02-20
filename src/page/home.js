@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import AddTask from '../component/formAddTask/addTask';
 import Header from '../component/header/header';
 import TaskCard from '../component/taskCard/taskCard';
-import { getTasks } from '../service/taskService';
+import { getTasksByProjectId } from '../service/taskService';
 import { getProjects } from '../service/projectService';
 
 const Home = (props) => {
@@ -14,17 +14,24 @@ const Home = (props) => {
     const [addTask, setAddTask] = useState(false);
     const [deleteTask, setDeleteTask] = useState(false);
     const [status, setStatus] = useState('');
-    const [projectStatus,setProjectStatus] = useState(null);
+    const [projectStatus, setProjectStatus] = useState(null);
 
     useEffect(() => {
-        getTasks()
-            .then(tasks => setTasks(tasks))
-            .catch(error => console.log(error));
+
         //prendo tutti i progetti dal db
         getProjects()
-            .then(projects => setProjects(projects))
+            .then(projects => {
+                setProjects(projects)
+                setProjectStatus(projects[0].id)
+            })
             .catch(error => console.log(error));
+
     }, [])
+    useEffect(() => {
+        getTasksByProjectId(projectStatus)
+            .then(tasks => setTasks(tasks))
+            .catch(error => console.log(error));
+    }, [projectStatus])
 
     const handleOptionClick = (option) => {
         setShowTask(false);

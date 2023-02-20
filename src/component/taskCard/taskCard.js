@@ -6,7 +6,7 @@ const TaskCard = ({ description, status, deadline, creator }) => {
 
 
     return (
-        <Card >
+        <Card style={{marginTop:'10px'}}>
             <Card.Body>
                 <Card.Body>
                     <Card.Title>{description}</Card.Title>

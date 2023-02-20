@@ -69,7 +69,7 @@ const Home = (props) => {
                         </select>
                     </div>
                     {showTask && <ShowTaskComponent tasks={tasks} />}
-                    {addTask && <AddTaskComponent />}
+                    {addTask && <AddTaskComponent projectId={projectStatus}/>}
                     {deleteTask && <DeleteTaskComponent />}
                 </Col>
             </Row>
@@ -86,10 +86,10 @@ function ShowTaskComponent(props) {
     )
 }
 
-function AddTaskComponent() {
+function AddTaskComponent(props) {
     return (
         <>
-            <AddTask />
+            <AddTask projectId={props.projectId}/>
         </>
     )
 }

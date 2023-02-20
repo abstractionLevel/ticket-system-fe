@@ -1,17 +1,48 @@
-import React , {useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { getEmployees } from '../../service/employeeService';
+import { createTask } from '../../service/taskService';
 
-const AddTask = () => {
+const AddTask = (props) => {
 
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('');
-    const [deadline, setDeadline] = useState('');
+    const [deadline, setDeadline] = useState(null);
+    const [employess, setEmployees] = useState(null);
+    const [statusEmployee, setStatusEmployee] = useState(null);
 
-    const handleOptionClick = () => {}
+    useEffect(() => {
+        getEmployees()
+            .then(response => {setEmployees(response)})
+            .catch(error => console.log(error))
+    },[])
 
-    const handleSubmit = () => {}
+    useEffect(() => {
+        if(employess) {
+            setStatusEmployee(employess[0].id)
+
+        }
+    },[employess])
+
+    const handleSubmit = (event) => { 
+        event.preventDefault();
+        const pyload = {
+            "descrizione": description,
+            "status": status,
+            "deadline": deadline,
+            "pmId":statusEmployee
+        }
+        createTask(props.projectId,pyload)
+            .then(response => console.log(response.data))
+            .catch(error => {
+                console.log(error);
+                return null;
+            });
+        
+       
+    }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="mt-5">
             <div className="form-group">
                 <label htmlFor="description">Descrizione</label>
                 <input type="text" className="form-control" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
@@ -29,7 +60,17 @@ const AddTask = () => {
                 <label htmlFor="deadline">Scadenza</label>
                 <input type="date" className="form-control" id="deadline" value={deadline} onChange={(e) => setDeadline(e.target.value)} required />
             </div>
-            <button type="submit" className="btn btn-primary mt-2">Aggiungi Task</button>
+            <div className="form-group">
+                <label htmlFor="status">Assegna ad un Pm</label>
+                <select className="form-control" id="status" value={statusEmployee} onChange={(e) => setStatusEmployee(e.target.value)} required>
+                    {employess && employess.map(value => (
+                        <option value={value.id}>{value.nome}</option>
+
+                    ))}
+
+                </select>
+            </div>
+            <button type="submit" className="btn btn-primary mt-4">Aggiungi Task</button>
         </form>
     )
 }

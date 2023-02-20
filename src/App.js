@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import TaskPage from './page/taskPage';
+import Home from './page/home';
 
 function App() {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<TaskPage />} />
+				<Route path="/" element={<Home />} />
 			</Routes>
 		</BrowserRouter>
 	);

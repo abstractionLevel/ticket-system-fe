@@ -6,6 +6,7 @@ import TaskCard from '../component/taskCard/taskCard';
 import { getTasksByProjectId, getTasksByStatus } from '../service/taskService';
 import { getProjects } from '../service/projectService';
 import ProjectCard from '../component/projectCard/projectCard';
+import AddEmployee from '../component/addEmployee/addEmployee';
 
 const Home = (props) => {
 
@@ -13,11 +14,9 @@ const Home = (props) => {
     const [projects, setProjects] = useState(null);
     const [showTask, setShowTask] = useState(true);
     const [addTask, setAddTask] = useState(false);
-    const [deleteTask, setDeleteTask] = useState(false);
     const [showProject, setShowProject] = useState(false);
-    const [status, setStatus] = useState('');
     const [projectStatus, setProjectStatus] = useState(null);
-    const [projectsResponse, setProjectsResponse] = useState(null);
+    const [showEmployee,setShowEmployee] = useState(null);
 
     useEffect(() => {
         //prendo tutti i progetti dal db
@@ -44,7 +43,8 @@ const Home = (props) => {
 
         if (option === 'show') setShowTask(true);
         if (option === 'add') setAddTask(true);
-        if (option === 'project') setShowProject(true)
+        if (option === 'project') setShowProject(true);
+        if (option === 'showEmployee') setShowEmployee(true);
     };
 
     const getAllTask = () => {
@@ -72,6 +72,9 @@ const Home = (props) => {
                         <ListGroup.Item as="li" active={showProject} onClick={() => handleOptionClick('project')}>
                             Projects
                         </ListGroup.Item>
+                        <ListGroup.Item as="li" active={showEmployee} onClick={() => handleOptionClick('showEmployee')}>
+                            Employee
+                        </ListGroup.Item>
                     </ListGroup>
                 </Col>
                 <Col md={9}>
@@ -97,6 +100,8 @@ const Home = (props) => {
                     {showTask && <ShowTaskComponent tasks={tasks} />}
                     {addTask && <AddTaskComponent projectId={projectStatus} />}
                     {showProject && <ShowProject projects={projects} />}
+                    {showEmployee && <ShowEmployee  />}
+                    
                 </Col>
             </Row>
         </Container >
@@ -126,6 +131,15 @@ const ShowProject = (props) => {
             {props.projects && props.projects.map((value, index) => (
                 <ProjectCard project={value}  />
             ))}
+            
+        </>
+    )
+}
+
+const ShowEmployee = (props) => {
+    return (
+        <>
+            <AddEmployee/>
             
         </>
     )

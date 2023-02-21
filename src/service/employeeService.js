@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = 'http://192.168.1.7:8080/api/employees';
+const BASE_URL_CEO = 'http://192.168.1.7:8080/api/ceo/employee'
 
 export const getEmployees = () =>
     axios.get(BASE_URL)
@@ -27,7 +28,15 @@ export const getDevs = () =>
         });
 
 export const getEmployeeById = (id) =>
-    axios.get(BASE_URL +'/'+ id)
+    axios.get(BASE_URL + '/' + id)
+        .then(response => response.data)
+        .catch(error => {
+            console.log(error);
+            return null;
+        });
+
+export const addEmployee = (payload) =>
+    axios.post(BASE_URL_CEO,payload)
         .then(response => response.data)
         .catch(error => {
             console.log(error);

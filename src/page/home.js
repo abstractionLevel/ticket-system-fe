@@ -5,6 +5,7 @@ import Header from '../component/header/header';
 import TaskCard from '../component/taskCard/taskCard';
 import { getTasksByProjectId, getTasksByStatus } from '../service/taskService';
 import { getProjects } from '../service/projectService';
+import ProjectCard from '../component/projectCard/projectCard';
 
 const Home = (props) => {
 
@@ -16,9 +17,9 @@ const Home = (props) => {
     const [showProject, setShowProject] = useState(false);
     const [status, setStatus] = useState('');
     const [projectStatus, setProjectStatus] = useState(null);
+    const [projectsResponse, setProjectsResponse] = useState(null);
 
     useEffect(() => {
-
         //prendo tutti i progetti dal db
         getProjects()
             .then(projects => {
@@ -28,11 +29,13 @@ const Home = (props) => {
             .catch(error => console.log(error));
 
     }, [])
+   
     useEffect(() => {
         getTasksByProjectId(projectStatus)
             .then(tasks => setTasks(tasks))
             .catch(error => console.log(error));
     }, [projectStatus])
+
 
     const handleOptionClick = (option) => {
         setShowTask(false);
@@ -66,7 +69,7 @@ const Home = (props) => {
                         <ListGroup.Item as="li" active={addTask} onClick={() => handleOptionClick('add')}>
                             Aggiungi task
                         </ListGroup.Item>
-                        <ListGroup.Item as="li" active={deleteTask} onClick={() => handleOptionClick('projects')}>
+                        <ListGroup.Item as="li" active={showProject} onClick={() => handleOptionClick('project')}>
                             Projects
                         </ListGroup.Item>
                     </ListGroup>
@@ -93,7 +96,7 @@ const Home = (props) => {
 
                     {showTask && <ShowTaskComponent tasks={tasks} />}
                     {addTask && <AddTaskComponent projectId={projectStatus} />}
-                    {showProject && <ShowProject />}
+                    {showProject && <ShowProject projects={projects} />}
                 </Col>
             </Row>
         </Container >
@@ -117,10 +120,13 @@ function AddTaskComponent(props) {
     )
 }
 
-const ShowProject = () => {
+const ShowProject = (props) => {
     return (
         <>
-            show project
+            {props.projects && props.projects.map((value, index) => (
+                <ProjectCard project={value}  />
+            ))}
+            
         </>
     )
 }

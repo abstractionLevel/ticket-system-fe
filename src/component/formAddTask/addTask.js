@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getEmployees } from '../../service/employeeService';
+import { getPms } from '../../service/employeeService';
 import { createTask } from '../../service/taskService';
 
 const AddTask = (props) => {
@@ -11,8 +11,8 @@ const AddTask = (props) => {
     const [statusEmployee, setStatusEmployee] = useState(null);
 
     useEffect(() => {
-        getEmployees()
-            .then(response => {setEmployees(response)})
+        getPms()
+            .then(response => setEmployees(response))
             .catch(error => console.log(error))
     },[])
 
@@ -32,7 +32,9 @@ const AddTask = (props) => {
             "pmId":statusEmployee
         }
         createTask(props.projectId,pyload)
-            .then(response => console.log(response.data))
+            .then(response => {//mostrato lo il tasks e resettare i campi
+                window.location.reload(false);
+            })
             .catch(error => {
                 console.log(error);
                 return null;
@@ -51,6 +53,7 @@ const AddTask = (props) => {
                 <label htmlFor="status">Stato</label>
                 <select className="form-control" id="status" value={status} onChange={(e) => setStatus(e.target.value)} required>
                     <option value="">Seleziona uno stato</option>
+                    <option value="elaborazione">In elaborazione</option>
                     <option value="todo">Da fare</option>
                     <option value="in-progress">In corso</option>
                     <option value="done">Completato</option>

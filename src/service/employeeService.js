@@ -10,3 +10,26 @@ export const getEmployees = () =>
             return null;
         });
 
+export const getPms = () =>
+    axios.get(BASE_URL + "/role/pms")
+        .then(response => response.data)
+        .catch(error => {
+            console.log(error);
+            return null;
+        });
+
+export const getDevs = () =>
+    axios.get(BASE_URL + "/role/devs")
+        .then(response => response.data)
+        .catch(error => {
+            console.log(error);
+            return null;
+        });
+
+export const getEmployeeById = (id) =>
+    axios.get(BASE_URL +'/'+ id)
+        .then(response => response.data)
+        .catch(error => {
+            console.log(error);
+            return null;
+        });

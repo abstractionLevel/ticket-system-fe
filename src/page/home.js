@@ -16,7 +16,7 @@ const Home = (props) => {
     const [addTask, setAddTask] = useState(false);
     const [showProject, setShowProject] = useState(false);
     const [projectStatus, setProjectStatus] = useState(null);
-    const [showEmployee,setShowEmployee] = useState(null);
+    const [showEmployee, setShowEmployee] = useState(null);
 
     useEffect(() => {
         //prendo tutti i progetti dal db
@@ -28,7 +28,7 @@ const Home = (props) => {
             .catch(error => console.log(error));
 
     }, [])
-   
+
     useEffect(() => {
         getTasksByProjectId(projectStatus)
             .then(tasks => setTasks(tasks))
@@ -52,6 +52,22 @@ const Home = (props) => {
             .then(tasks => setTasks(tasks))
             .catch(error => console.log(error));
     }
+
+    const  isDateAfterToday = (date) => {
+        const today = new Date(); 
+        const inputDate = new Date(date);
+        return inputDate < today;
+      }
+
+    const getTaskOverDeadLine = () => {
+        getTasksByProjectId(projectStatus)
+            .then(tasks => {
+                const newTasks = tasks.filter(val=>isDateAfterToday(val.deadline))//prendo solo quello che sono scaduti
+                setTasks(newTasks)
+            })
+            .catch(error => console.log(error));
+    }
+
     const getTaskByElaborazione = () => {
         getTasksByStatus("elaborazione")
             .then(response => setTasks(response))
@@ -94,14 +110,17 @@ const Home = (props) => {
                             <Button className="btn btn-info btn-sm " style={{ marginLeft: '10px' }} onClick={getTaskByElaborazione}>
                                 Elaborazione
                             </Button>
+                            <Button className="btn btn-info btn-sm " style={{ marginLeft: '10px' }} onClick={getTaskOverDeadLine}>
+                                sforato la deadline
+                            </Button>
                         </Col>
                     </Row>
 
                     {showTask && <ShowTaskComponent tasks={tasks} />}
                     {addTask && <AddTaskComponent projectId={projectStatus} />}
                     {showProject && <ShowProject projects={projects} />}
-                    {showEmployee && <ShowEmployee  />}
-                    
+                    {showEmployee && <ShowEmployee />}
+
                 </Col>
             </Row>
         </Container >
@@ -129,9 +148,9 @@ const ShowProject = (props) => {
     return (
         <>
             {props.projects && props.projects.map((value, index) => (
-                <ProjectCard project={value}  />
+                <ProjectCard project={value} />
             ))}
-            
+
         </>
     )
 }
@@ -139,8 +158,8 @@ const ShowProject = (props) => {
 const ShowEmployee = (props) => {
     return (
         <>
-            <AddEmployee/>
-            
+            <AddEmployee />
+
         </>
     )
 }

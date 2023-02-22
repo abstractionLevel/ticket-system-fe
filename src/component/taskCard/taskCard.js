@@ -4,10 +4,12 @@ import { deleteAssignedTask, getAssignedTasks } from '../../service/taskService'
 import ModalAddDevTask from '../modalAddDevToTask/modalAddDevTask';
 import './taskCard.scss';
 import { getEmployeeById } from '../../service/employeeService';
+import ModalInfoTask from '../modalInfoTask/modalInfoTask';
 
 const TaskCard = ({ description, status, deadline, id }) => {
 
-    const [showModal, setShowModal] = useState(false);
+    const [showModalAddDev, setShowModalAddDev] = useState(false);
+    const [showModalInfoTask, setShowModalInfoTask] = useState(false);
     const [tasksAssgnment, setTaskAssignments] = useState(null);
     const [dev, setDev] = useState(null);
     const [assignedId, setAssignedId] = useState(null);
@@ -49,12 +51,14 @@ const TaskCard = ({ description, status, deadline, id }) => {
                         <Card.Text>Deadline: {deadline}</Card.Text>
                     </Card.Body>
                     <Card.Footer >
-                        {dev && <div style={{ float: 'right' }}><p  >Assegnato ad:  {dev.nome + ' ' + dev.cognome}</p> <Button style={{ float: 'right' }} onClick={removeAssigned} variant="secondary" size="sm">rimuovi</Button></div>}
-                        {!dev && <Button style={{ float: 'right' }} onClick={() => setShowModal(!showModal)} variant="primary" size="sm">Assegna ad un dev</Button> }
+                        <Button style={{ float: 'right' , marginLeft: '10px' }} onClick={() => setShowModalAddDev(!showModalAddDev)} variant="primary" size="sm">Assegna ad un dev</Button> 
+                        <Button style={{ float: 'right' }} onClick={() => setShowModalInfoTask(!showModalInfoTask)} variant="primary" size="sm">Info</Button>
                     </Card.Footer>
                 </Card.Body>
             </Card>
-            <ModalAddDevTask close={() => setShowModal(!showModal)} open={showModal} taskId={id} />
+            <ModalAddDevTask close={() => setShowModalAddDev(!showModalAddDev)} open={showModalAddDev} taskId={id} />
+            <ModalInfoTask close={() => setShowModalInfoTask(!showModalInfoTask)} open={showModalInfoTask} taskId={id} />
+
         </>
     )
 }

@@ -7,6 +7,8 @@ import { getTasksByProjectId, getTasksByStatus } from '../service/taskService';
 import { getProjects } from '../service/projectService';
 import ProjectCard from '../component/projectCard/projectCard';
 import AddEmployee from '../component/addEmployee/addEmployee';
+import EmployeeCard from '../component/employeeCard/employeeCard';
+import FormAddProject from '../component/formAddProject/formAddProject';
 
 const Home = (props) => {
 
@@ -40,6 +42,7 @@ const Home = (props) => {
         setShowTask(false);
         setAddTask(false);
         setShowProject(false);
+        setShowEmployee(false);
 
         if (option === 'show') setShowTask(true);
         if (option === 'add') setAddTask(true);
@@ -53,29 +56,29 @@ const Home = (props) => {
             .catch(error => console.log(error));
     }
 
-    const  isDateAfterToday = (date) => {
-        const today = new Date(); 
+    const isDateAfterToday = (date) => {
+        const today = new Date();
         const inputDate = new Date(date);
         return inputDate < today;
-      }
+    }
 
     const getTaskOverDeadLine = () => {
         getTasksByProjectId(projectStatus)
             .then(tasks => {
-                const newTasks = tasks.filter(val=>isDateAfterToday(val.deadline))//prendo solo quello che sono scaduti
+                const newTasks = tasks.filter(val => isDateAfterToday(val.deadline))//prendo solo quello che hanno 
                 setTasks(newTasks)
             })
             .catch(error => console.log(error));
     }
 
     const getTaskByElaborazione = () => {
-        getTasksByStatus("elaborazione")
+        getTasksByStatus("elaborazione",projectStatus)
             .then(response => setTasks(response))
     }
 
     return (
         <Container >
-            <Header />
+            <Header title={"ticket system"}/>
             <Row>
                 <Col md={3}>
                     <ListGroup as="ul">
@@ -93,28 +96,35 @@ const Home = (props) => {
                         </ListGroup.Item>
                     </ListGroup>
                 </Col>
-                <Col md={9}>
-                    <div className="form-group mb-2">
-                        <select className="form-control" id="status" value={projectStatus} onChange={(e) => setProjectStatus(e.target.value)} required>
-                            {projects && projects.map(value => (
-                                <option value={value.id}>Proggetto: {value.name}</option>
-                            ))}
 
-                        </select>
-                    </div>
-                    <Row>
-                        <Col>
-                            <Button className="btn btn-info btn-sm " onClick={getAllTask}>
-                                Tutti
-                            </Button>
-                            <Button className="btn btn-info btn-sm " style={{ marginLeft: '10px' }} onClick={getTaskByElaborazione}>
-                                Elaborazione
-                            </Button>
-                            <Button className="btn btn-info btn-sm " style={{ marginLeft: '10px' }} onClick={getTaskOverDeadLine}>
-                                sforato la deadline
-                            </Button>
-                        </Col>
-                    </Row>
+                <Col md={9}>
+                    {showTask || addTask ? (
+                        <div className="form-group mb-2">
+                            <select className="form-control" id="status" value={projectStatus} onChange={(e) => setProjectStatus(e.target.value)} required>
+                                {projects && projects.map(value => (
+                                    <option value={value.id}>Proggetto: {value.name}</option>
+                                ))}
+
+                            </select>
+                        </div>
+                    ) : null
+                    }
+                    {showTask &&
+                        <Row>
+                            <Col>
+                                <Button className="btn btn-info btn-sm " onClick={getAllTask}>
+                                    Tutti
+                                </Button>
+                                <Button className="btn btn-info btn-sm " style={{ marginLeft: '10px' }} onClick={getTaskByElaborazione}>
+                                    Elaborazione
+                                </Button>
+                                <Button className="btn btn-info btn-sm " style={{ marginLeft: '10px' }} onClick={getTaskOverDeadLine}>
+                                    sforato la deadline
+                                </Button>
+                            </Col>
+                        </Row>
+                    }
+
 
                     {showTask && <ShowTaskComponent tasks={tasks} />}
                     {addTask && <AddTaskComponent projectId={projectStatus} />}
@@ -129,7 +139,7 @@ const Home = (props) => {
 function ShowTaskComponent(props) {
     return (
         <>
-            {props.tasks && props.tasks.map((value, index) => (
+            {props.tasks && props.tasks.map((value) => (
                 <TaskCard description={value.descrizione} status={value.status} deadline={value.deadline} id={value.id} />
             ))}
         </>
@@ -150,6 +160,7 @@ const ShowProject = (props) => {
             {props.projects && props.projects.map((value, index) => (
                 <ProjectCard project={value} />
             ))}
+            <FormAddProject />
 
         </>
     )
@@ -158,6 +169,7 @@ const ShowProject = (props) => {
 const ShowEmployee = (props) => {
     return (
         <>
+            <EmployeeCard />
             <AddEmployee />
 
         </>

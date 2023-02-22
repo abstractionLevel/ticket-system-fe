@@ -5,14 +5,13 @@ import { Card, Button } from 'react-bootstrap';
 
 const ProjectCard = (props) => {
 
-    const [isCrossTeam, setIsCrossTeam] = useState(false);
+    const [isCrossTeam, setIsCrossTeam] = useState(null);
 
     function checkSameTeamName(arr) {
-        if (arr.length === 0) return true;
-
+        if(arr.length === 0) return false;
         const firstTeamName = arr[0].teamName;
         for (let i = 1; i < arr.length; i++) {
-            //controllo il primo con tutti
+            // console.log(props.project.name , " :" ,arr[i].teamName , " = " ,firstTeamName)
             if (arr[i].teamName !== firstTeamName) {
                 return false;
             }
@@ -21,17 +20,23 @@ const ProjectCard = (props) => {
     }
 
     useEffect(() => {
+         
         getAssignedProjects(props.project.id)
             .then(response => {
-                setIsCrossTeam()
-                const sameTeamName = checkSameTeamName(response);
-                setIsCrossTeam(sameTeamName)
+                if(response.length>0) {
+                    console.log(props.project.name)
+                    console.log( response)
+                    const sameTeamName = checkSameTeamName(response);
+                    setIsCrossTeam(sameTeamName)
+                }
+               
             })
             .catch(error => {
                 console.log(error);
                 return null;
             });
     }, [props.project])
+    // console.log(props.project.name , " :" , isCrossTeam)
 
 
     return (
@@ -40,7 +45,7 @@ const ProjectCard = (props) => {
                 <Card.Body>
                     <Card.Body>
                         <Card.Title>{props.project.name} </Card.Title>
-                        <Card.Title>{isCrossTeam && " Cross Team"} </Card.Title>
+                        <Card.Title>{(!isCrossTeam && isCrossTeam!=null) ? " Cross Team" : ""} </Card.Title>
                     </Card.Body>
                 </Card.Body>
             </Card>

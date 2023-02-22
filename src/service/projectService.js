@@ -12,7 +12,16 @@ export const getProjects = () =>
             return null;
         });
 export const getAssignedProjects = (id) =>
-    axios.get(BASE_URL+'/'+id+'/teams')
+    axios.get(BASE_URL + '/' + id + '/teams')
+        .then(response => response.data)
+        .catch(error => {
+            console.log(error);
+            return null;
+        });
+
+
+export const createProject = (pyload) =>
+    axios.post(BASE_URL, pyload)
         .then(response => response.data)
         .catch(error => {
             console.log(error);

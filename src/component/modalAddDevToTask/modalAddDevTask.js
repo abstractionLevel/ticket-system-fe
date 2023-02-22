@@ -33,13 +33,13 @@ const ModalAddDevTask = (props) => {
         <>
             <Modal show={props.open} onHide={props.close}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>Assegna Task</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="form-group">
                         <select className="form-control" id="status" value={devsStatus} onChange={(e) => setDevsStatus(e.target.value)} required>
                             {devs && devs.map(value => (
-                                <option value={value.id}>DEV: {value.nome}</option>
+                                <option value={value.id}>{value.nome}</option>
                             ))}
 
                         </select>

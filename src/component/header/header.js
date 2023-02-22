@@ -1,11 +1,11 @@
 import React from 'react';
 
 
-const Header = () => {
+const Header = (props) => {
 
     return (
         <div className="header" style={{ marginBottom: "100px" }}>
-            {/* <h1>{title}</h1> */}
+            <h1>{props.title}</h1>
         </div>
     )
 }

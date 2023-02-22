@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { addEmployee } from '../../service/employeeService';
+import { addEmployee, getPms } from '../../service/employeeService';
 import { getAllRole } from '../../service/teams';
 
 const AddEmployee = (props) => {
@@ -7,31 +7,40 @@ const AddEmployee = (props) => {
     const [nome, setNome] = useState('');
     const [cognome, setCognome] = useState('');
     const [role, setRole] = useState(null);
-    const [teams,setTeams] = useState(null);
-    const [teamId,setTeamId] = useState(null);
+    const [teams, setTeams] = useState(null);
+    const [teamId, setTeamId] = useState(null);
+    const [pms, setPms] = useState(null);
+    const [pmId,setPmId] = useState(null);
 
-    useEffect(()=>{
+    useEffect(() => {
         getAllRole()
-            .then(response=>setTeams(response))
-    },[])
+            .then(response => setTeams(response))
+            .catch(error => console.log(error))
 
-    const handleSubmit = (event) => { 
+        getPms()
+            .then(response => setPms(response))
+            .catch(error => console.log(error))
+    }, [])
+
+    const handleSubmit = (event) => {
         event.preventDefault();
         const pyload = {
             "nome": nome,
             "cognome": cognome,
             "roleId": role,
-            "teamId":teamId
+            "teamId": teamId,
+            "referentId":pmId
         }
         addEmployee(pyload)
-            .then(response => {//mostrato lo il tasks e resettare i campi
+            .then(response => {
+                 window.location.reload(false);
             })
             .catch(error => {
                 console.log(error);
                 return null;
             });
-        
-       
+
+
     }
 
     return (
@@ -55,10 +64,21 @@ const AddEmployee = (props) => {
                 <label htmlFor="status">Assegna ad un team</label>
                 <select className="form-control" id="status" value={teamId} onChange={(e) => setTeamId(e.target.value)} required>
                     <option value="">seleziona team</option>
-                    {teams && teams.map(value=>(
+                    {teams && teams.map(value => (
                         <option value={value.id}>{value.nome}</option>
                     ))}
-                    
+
+                </select>
+            </div>
+            <div className="form-group">
+                <label htmlFor="status">Assegna ad un Pm</label>
+                <select className="form-control" id="status" value={pmId} onChange={(e) => setPmId(e.target.value)} required>
+                    <option value={null}>seleziona un referente</option>
+                    {pms && pms.map(value => (
+                        <option value={value.id}>{value.nome}</option>
+
+                    ))}
+
                 </select>
             </div>
             <button type="submit" className="btn btn-primary mt-4">Aggiungi Employee</button>

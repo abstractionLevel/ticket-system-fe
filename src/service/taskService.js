@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = 'http://192.168.1.7:8080/api/projects/';
-const BASE_URL_ASSIGN_PROJECT = 'http://192.168.1.7:8080/api/tasks/'
+const BASE_URL_TASK = 'http://192.168.1.7:8080/api/tasks/'
 
 export const getTasksByProjectId = (id) =>
 	axios.get(BASE_URL + id + "/tasks")
@@ -25,7 +25,7 @@ export const createTask = (id, payload) =>
 		});
 
 export const assignTask = (id, devId) =>
-	axios.post(BASE_URL_ASSIGN_PROJECT + id + "/assigned-developer?developerId=" + devId, {
+	axios.post(BASE_URL_TASK + id + "/assigned-developer?developerId=" + devId, {
 		headers: {
 			'Content-Type': 'application/json'
 		}
@@ -37,7 +37,7 @@ export const assignTask = (id, devId) =>
 		});
 
 export const getAssignedTasks = (id) =>
-	axios.get(BASE_URL_ASSIGN_PROJECT + id + "/assigned-developer")
+	axios.get(BASE_URL_TASK + id + "/assigned-developer")
 		.then(response => response.data)
 		.catch(error => {
 			console.log(error);
@@ -45,16 +45,31 @@ export const getAssignedTasks = (id) =>
 		});
 
 
-export const deleteAssignedTask = (taskId, assigneId) =>
-	axios.delete(BASE_URL_ASSIGN_PROJECT + taskId + "/assigned-developer/" + assigneId)
+export const deleteAssignedTask = (taskId, devId) =>
+	axios.delete(BASE_URL_TASK + taskId + "/assigned-developer/" + devId)
 		.then(response => response.data)
 		.catch(error => {
 			console.log(error);
 			return null;
 		});
 
-export const getTasksByStatus = (status) =>
-	axios.get(BASE_URL_ASSIGN_PROJECT + status)
+export const getTasksByStatus = (status,projectId) =>
+	axios.get(BASE_URL_TASK + status +  "/projects/" + projectId)
+		.then(response => response.data)
+		.catch(error => {
+			console.log(error);
+			return null;
+		});
+
+export const addNote = (taskId, payload) =>
+	axios.post(BASE_URL_TASK + taskId + '/notes', payload)
+		.then(response => response.data)
+		.catch(error => {
+			console.log(error);
+			return null;
+		});
+export const getNotes = (taskId) =>
+	axios.get(BASE_URL_TASK + taskId+'/notes')
 		.then(response => response.data)
 		.catch(error => {
 			console.log(error);
